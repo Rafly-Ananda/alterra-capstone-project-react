@@ -5,7 +5,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./components/layouts/AdminLayout";
 
 /** Pages - Admin */
-import Product from "./pages/admin/Product";
+import ProductOutlet from "./pages/admin/products/ProductOutlet";
+import ProductHome from "./pages/admin/products/ProductHome";
+import ProductDetail from "./pages/admin/products/ProductDetail";
+
 import Home from "./pages/admin/Home";
 import Payments from "./pages/admin/Payments";
 import Users from "./pages/admin/Users";
@@ -16,7 +19,10 @@ export default function App() {
     <Routes>
       <Route path="/admin" element={<AdminLayout />}>
         <Route path="" element={<Home />} />
-        <Route path="products" element={<Product />} />
+        <Route path="products" element={<ProductOutlet />}>
+          <Route path="" element={<ProductHome />} />
+          <Route path=":id" element={<ProductDetail />} />
+        </Route>
         <Route path="users" element={<Users />} />
         <Route path="payments" element={<Payments />} />
         {/* <Route path="logout" element={<Product />} /> */}
