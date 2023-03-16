@@ -14,21 +14,34 @@ import Payments from "./pages/admin/Payments";
 import Users from "./pages/admin/Users";
 import NotFound from "./pages/admin/NotFound";
 
+/** Components - Client */
+import ClientLayout from "./components/layouts/ClientLayout";
+import OrderOutlet from "./pages/client/order/OrderOutlet";
+import OrderHome from "./pages/client/order/OrderHome";
+import OrderDetail from "./pages/client/order/OrderDetail";
+
 export default function App() {
-  return (
+    return (
     <Routes>
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="" element={<Home />} />
-        <Route path="products" element={<ProductOutlet />}>
-          <Route path="" element={<ProductHome />} />
-          <Route path=":id" element={<ProductDetail />} />
+        <Route path="/admin" element={<AdminLayout />}>
+            <Route path="" element={<Home />} />
+            <Route path="products" element={<ProductOutlet />}>
+                <Route path="" element={<ProductHome />} />
+                <Route path=":id" element={<ProductDetail />} />
+            </Route>
+            <Route path="users" element={<Users />} />
+            <Route path="payments" element={<Payments />} />
+            {/* <Route path="logout" element={<Product />} /> */}
+            <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
-        <Route path="users" element={<Users />} />
-        <Route path="payments" element={<Payments />} />
-        {/* <Route path="logout" element={<Product />} /> */}
-        <Route path="*" element={<Navigate to="/admin" replace />} />
-      </Route>
-      <Route path="/" element={<>Base Home For client routes</>}></Route>
+        <Route path="/" element={<ClientLayout />}>
+            <Route path="" element={<Home />} />
+            <Route path="orders" element={<OrderOutlet />}>
+                <Route path="" element={<OrderHome />} />
+                <Route path=":id" element={<OrderDetail />} />
+            </Route>
+        </Route>
+        {/* <Route path="/" element={<>Base Home For client routes</>}></Route> */}
     </Routes>
   );
 }
