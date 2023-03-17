@@ -12,7 +12,7 @@ const confirm = Modal.confirm;
 const orderServiceUrl = "http://localhost:8085/api/v1/orders";
 const  productServiceUrl = "http://localhost:8084/api/v1/products";
 
-export default function OrderHome() {
+export default function OrderClientHome() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [order, setOrders] = useState([]);
@@ -87,7 +87,7 @@ export default function OrderHome() {
 					}, 2000);
 				})
 				.catch((error) => {
-					sendNotification('error','Order Canceled failed','the Order #'+order_id+' failed, '+error+'')
+					sendNotification('error','Order Cancel failed','the Order #'+order_id+' failed, '+error+'')
 					setError(error);
 				})
 			},
@@ -120,7 +120,7 @@ return (
 					type="error"
 					closable
 					/></div>}
-					{!isLoading && !error && !order.length && <div>Order not found</div>}
+					{!isLoading && !error && !order.length && <Alert message="Orders not found" type="error" />}
 					{!isLoading &&order.map((e, i) => (
 					<Card key={e.order_id} className="hover:bg-gray-100 my-2 shadow">
 						<h1>Order #{e.order_id}</h1>

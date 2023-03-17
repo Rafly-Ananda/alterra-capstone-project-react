@@ -7,6 +7,7 @@ import {
   LogoutOutlined,
   UserOutlined,
   ShoppingCartOutlined,
+  CreditCardOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Menu, Button } from "antd";
@@ -26,13 +27,12 @@ const items = [
     type: "group",
     children: [
       getItem("Dashboard", "home", <HomeOutlined />),
-      getItem("Products", "products", <DatabaseOutlined />),
-      getItem("Users", "users", <UserOutlined />, [
-        getItem("View All Users", "viewUsers"),
+      getItem("Items", "items", <DatabaseOutlined />, [
+        getItem("Products", "products"),
+        getItem("Categories", "categories"),
       ]),
-      getItem("Order", "order", <ShoppingCartOutlined />, [
-        getItem("View All Order", "viewOrder"),
-      ]),
+      getItem("Users", "users", <UserOutlined />),
+      getItem("Orders", "orders", <ShoppingCartOutlined />),
       getItem("Settings", "settings", <SettingOutlined />),
     ],
   },
@@ -52,7 +52,14 @@ export default function SideNav() {
   const navigate = useNavigate();
   const onClick = (e) => {
     if (e.key === "logout") return;
-    e.key === "home" ? navigate("") : navigate(`/admin/${e.key}`);
+
+    if (e.keyPath.length > 1) {
+      e.key === "home"
+        ? navigate("")
+        : navigate(`/admin/${e.keyPath[1]}/${e.keyPath[0]}`);
+    } else {
+      e.key === "home" ? navigate("") : navigate(`/admin/${e.key}`);
+    }
   };
 
   return (

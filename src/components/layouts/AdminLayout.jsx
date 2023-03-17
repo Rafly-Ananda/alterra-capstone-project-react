@@ -1,11 +1,19 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import SideNav from "../global/SideNav";
 import TopNav from "../global/TopNav";
 
 export default function AdminLayout() {
-  return (
+  const { user } = useSelector((state) => state.user);
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(user);
+  }, []);
+
+  return user?.role === "admin" ? (
     <div className="h-screen w-screen flex flex-row">
       <div className="h-full ">
         <SideNav />
@@ -14,5 +22,7 @@ export default function AdminLayout() {
         <Outlet />
       </div>
     </div>
+  ) : (
+    <Navigate to={"/"} state={{ from: location }} replace />
   );
 }

@@ -1,39 +1,58 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { Button, Form, Modal } from "antd";
+import { Button, Form } from "antd";
 import AddProductModal from "../../../components/product/AddProductModal";
 import { PlusOutlined } from "@ant-design/icons";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
-
-const productServiceUrl = "http://localhost:8084/api/v1/products";
+import { Space, Table, Tag } from "antd";
+import { message, Popconfirm } from "antd";
+import { productServiceUrl, categoryServiceUrl } from "../../../config/config";
 
 export default function ProductHome() {
   const [form] = Form.useForm();
   const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fileList, setFileList] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
   const formButton = useRef(null);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
 
   const handleOk = () => {
     formButton.current.click();
   };
 
   const handleCancel = () => {
+    setFileList([]);
     form.resetFields();
+    setSelectedProduct(null);
+    setIsEdit(false);
     setIsModalOpen(false);
+  };
+
+  const cancelDelete = (e) => {
+    message.error("Product deletion canceled");
   };
 
   const fetchProduct = async () => {
     setIsLoading(true);
     try {
       const res = await axios.get(productServiceUrl);
-      setProducts(res.data.data);
+      const categoriesRes = await axios.get(categoryServiceUrl);
+
+      setProducts(
+        res.data.data.map((e) => ({
+          key: e.product_id,
+          name: e.name,
+          category: categoriesRes.data.data.find(
+            (f) => f.p_category_id === e.category_id
+          ).name,
+          price: e.price,
+          stock: e.stock,
+          date_added: moment(e.createAt).format("MM/DD/YY"),
+        }))
+      );
       setIsLoading(false);
     } catch (e) {
       console.log(e.message);
@@ -55,24 +74,117 @@ export default function ProductHome() {
     }
 
     try {
-      await axios.post(productServiceUrl, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (isEdit) {
+        await axios.put(
+          `${productServiceUrl}/${selectedProduct.product.product_id}`,
+          newProduct
+        );
+        message.success("Product edited");
+      } else {
+        await axios.post(productServiceUrl, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        message.success("Product created");
+      }
 
       await fetchProduct();
+      handleCancel();
+    } catch (e) {
+      console.log(e.message);
+    } finally {
       setIsLoading(false);
-      setIsModalOpen(false);
-      form.resetFields();
+    }
+  };
+
+  const deleteProduct = async (product) => {
+    try {
+      await axios.delete(`${productServiceUrl}/${product.key}`);
+      message.success("Product deleted");
+      setProducts((prev) => prev.filter((e) => e.key !== product.key));
     } catch (e) {
       console.log(e.message);
     }
   };
 
+  const onEditProduct = async (product) => {
+    setIsEdit(true);
+    const res = await axios.get(`${productServiceUrl}/${product.key}`);
+    const productDetail = res.data.data[0];
+    setSelectedProduct(productDetail);
+    form.setFieldsValue({
+      name: productDetail.product.name,
+      description: productDetail.product.description,
+      category_id: productDetail.category.p_category_id,
+      price: productDetail.product.price,
+      stock: productDetail.product.stock,
+    });
+    setIsModalOpen(true);
+  };
+
+  const openAddProduct = () => {
+    setIsEdit(false);
+    setIsModalOpen(true);
+  };
+
   useEffect(() => {
     fetchProduct();
   }, []);
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "Stock",
+      dataIndex: "stock",
+      key: "stock",
+    },
+    {
+      title: "Date Added",
+      dataIndex: "date_added",
+      key: "date_added",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            type="link"
+            size="small"
+            onClick={() => onEditProduct(record)}
+          >
+            Edit
+          </Button>
+
+          <Popconfirm
+            title="Delete the product"
+            description="Are you sure to delete this product?"
+            onConfirm={() => deleteProduct(record)}
+            onCancel={cancelDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a href="#">Delete</a>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <div className="w-full h-full flex items-center justify-center p-10 overflow-x-scroll font-inter">
@@ -96,40 +208,12 @@ export default function ProductHome() {
             shape="round"
             className="bg-[#5590ff]"
             icon={<PlusOutlined />}
-            onClick={showModal}
+            onClick={openAddProduct}
           >
             Add new product
           </Button>
         </div>
-        <div className="w-full flex flex-col gap-5">
-          <div className="grid grid-cols-8 p-2 shadow-md rounded-md bg-[#5590ff] font-semibold text-white">
-            <div className="col-span-1">NO</div>
-            <div className="col-span-2">NAME</div>
-            <div className="col-span-2">CATEGORY</div>
-            <div className="col-span-1">PRICE</div>
-            <div className="col-span-1">STOCK</div>
-            <div className="col-span-1">DATE ADDED</div>
-          </div>
-
-          {products.map((e, i) => (
-            <Link
-              to={`/admin/products/${e.product_id}`}
-              key={e.name + i}
-              className="no-underline"
-            >
-              <div className="grid grid-cols-8 p-2 py-4 shadow-md rounded-md font-medium text-[#797d85] hover:bg-[#f2f7ff] hover:cursor-pointer">
-                <div className="col-span-1">{i + 1}</div>
-                <div className="col-span-2">{e.name}</div>
-                <div className="col-span-2">Processor</div>
-                <div className="col-span-1">{e.price}</div>
-                <div className="col-span-1">{e.stock}</div>
-                <div className="col-span-1">
-                  {moment(e.createAt).format("MM/DD/YY")}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <Table className="w-full" columns={columns} dataSource={products} />
       </div>
     </div>
   );

@@ -24,11 +24,10 @@ export default function ExploreHome() {
 	// 		setIsLoading(false);
 	// 	}
 	// };
-
     const fetchProducts = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(productServiceUrl);
+            const res = await axios.get(productServiceUrl)
             const productsWithImages = await Promise.all(res.data.data.map(async product => {
             console.log(res.data)
             console.log(product.image)
@@ -64,18 +63,18 @@ export default function ExploreHome() {
             {isLoading ? (
                 <Spin />
                 ) : error ? (
-                <Alert message="Error loading product details" type="error" />
+                <Alert message={"Error loading product details : "+error} type="error" />
                 ) : products.length > 0 ? (
                 products.map((product, i) => (
                     <>
                         <Card key={i} className="rounded-md shadow m-2" style={{ width: 240 }} bodyStyle={{ padding: 0 }}>
-                            <Link to="/products/1">
+                            <Link to={"/products/"+product.product_id}>
                             <div className="custom-image">
-                            <div className="relative h-60">
-                                <img className="absolute top-0 left-0 w-full h-full rounded-md object-cover" 
-                                src={product.imageUrl} 
-                                alt="product-images" />
-                            </div>
+                                <div className="relative h-60">
+                                    <img className="absolute top-0 left-0 w-full h-full rounded-md object-cover" 
+                                    src={product.imageUrl} 
+                                    alt="product-images" />
+                                </div>
                             </div>
                             <div className="custom-card p-2">
                             <h3>{product.name}</h3>
@@ -86,7 +85,7 @@ export default function ExploreHome() {
                     </>
                 ))
                 ) : (
-                "product not found"
+                    <Alert message="Product not found" type="error" />
             )}
             
             </div>

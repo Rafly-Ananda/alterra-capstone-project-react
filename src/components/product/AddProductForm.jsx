@@ -3,6 +3,7 @@ import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useState, useEffect } from "react";
 import ImageUploader from "./ImageUploader";
 const { TextArea } = Input;
+import { categoryServiceUrl } from "../../config/config";
 
 export default function AddProductForm({
   fileList,
@@ -15,7 +16,7 @@ export default function AddProductForm({
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get("http://localhost:8083/api/v1/categories");
+      const res = await axios.get(categoryServiceUrl);
       setProductCategory(res.data.data);
     })();
   }, []);
@@ -37,7 +38,6 @@ export default function AddProductForm({
         initialValues={{ remember: true }}
         onFinish={(e) => {
           onSubmit(e);
-          form.resetFields();
         }}
         onFinishFailed={onFinishFailed}
         className="w-full "
@@ -51,7 +51,10 @@ export default function AddProductForm({
         <Form.Item label="Category" name="category_id">
           <Select placeholder="Select product category">
             {productCategory.map((e) => (
-              <Select.Option key={e.category_id + e.name} value={e.category_id}>
+              <Select.Option
+                key={e.category_id + e.name}
+                value={e.p_category_id}
+              >
                 {e.name}
               </Select.Option>
             ))}

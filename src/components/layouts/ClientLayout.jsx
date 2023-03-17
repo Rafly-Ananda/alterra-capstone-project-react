@@ -13,14 +13,13 @@ export default function ClientLayout() {
     } = theme.useToken();
     
     return (
-        <Layout className="layout min-h-screen">
+        <Layout className="layout min-h-screen bg-white">
         <Header className='bg-white drop-shadow-lg'>
             <NavbarClient />
         </Header>
         <Content className='px-4 md:px-20 xl:px-40 2xl:px-60'>
             <Outlet />
         </Content>
-        {/* <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer> */}
         </Layout>
     );
 }

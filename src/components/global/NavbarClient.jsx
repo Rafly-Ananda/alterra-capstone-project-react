@@ -8,13 +8,13 @@ const NavbarClient = () => {
   return (
     <nav className="navbar">
       <Menu mode="horizontal" selectedKeys={[pathname]}>
-        <Menu.Item key="" >
-            <NavLink to="#">
+
+            <NavLink to="#" style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={"/vite.svg"} alt="" />
             </NavLink>
-        </Menu.Item>
-        <Menu.Item key="/home" >
-            <NavLink to="/home">Home</NavLink>
+
+        <Menu.Item key="/" >
+            <NavLink to="/">Home</NavLink>
         </Menu.Item>
         <Menu.Item key="/explore"  >
             <NavLink to="/explore">Explore</NavLink>

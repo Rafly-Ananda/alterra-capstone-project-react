@@ -79,7 +79,6 @@ export default function OrderDetail() {
             </Button>
             <div className="flex flex-col lg:flex-row h-full">
                 <div className="flex-3 lg:p-8 bg-white">
-                
                     <div className="bg-white px-8 pt-10 pb-10 ">
                         {isLoading && <div><Spin className="mx-2"/>Fetching Data</div>}
                         {error && <div><Alert
