@@ -19,6 +19,8 @@ import ClientLayout from "./components/layouts/ClientLayout";
 import OrderOutlet from "./pages/client/order/OrderOutlet";
 import OrderHome from "./pages/client/order/OrderHome";
 import OrderDetail from "./pages/client/order/OrderDetail";
+import ExploreHome from "./pages/client/explore/ExploreHome";
+import ProductClientDetail from "./pages/client/product/ProductClientDetail";
 
 export default function App() {
     return (
@@ -40,6 +42,8 @@ export default function App() {
                 <Route path="" element={<OrderHome />} />
                 <Route path=":id" element={<OrderDetail />} />
             </Route>
+            <Route path="/explore" element={<ExploreHome />} />
+            <Route path="/products/:id" element={<ProductClientDetail />} />
         </Route>
         {/* <Route path="/" element={<>Base Home For client routes</>}></Route> */}
     </Routes>

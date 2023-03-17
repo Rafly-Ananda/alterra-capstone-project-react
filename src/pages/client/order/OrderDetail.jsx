@@ -27,7 +27,7 @@ export default function OrderDetail() {
 			} catch (e) {
                 setError(e);
                 setIsLoading(false);
-				console.log(e.message);
+				console.log(e);
 			} finally {
 				setIsLoading(false);
 			}
@@ -55,8 +55,8 @@ export default function OrderDetail() {
 	};
 
 	useEffect(() => {
-		order.forEach((order) => {
-			order.orderDetails.forEach((orderDetail) => {
+		order?.forEach((order) => {
+			order?.orderDetails?.forEach((orderDetail) => {
 				const productId = orderDetail.product_id;
 				if (!products[productId]) {
 					getProductInfo(productId);
@@ -88,10 +88,9 @@ export default function OrderDetail() {
                             type="error"
                             showIcon
                         /></div>}
-                        {!isLoading && !error && !order.length && <div>Order not found</div>}
-                        {!isLoading && order.map((e, i) => (
+                        {!isLoading && !error && order.length > 0 && order?.map((e, i) => (
                             <>
-                            <Steps direction="vertical" current={e.status.orderState.order_state_id-1}>
+                            <Steps direction="vertical" current={e?.status?.orderState?.order_state_id-1}>
                                 <Steps title="Waiting Payment" description="Payment order" />
                                 <Steps title="On Process" description="Packaging Process" />
                                 <Steps title="On Delivery" description="Order on Delivery" />
@@ -104,44 +103,56 @@ export default function OrderDetail() {
                 </div>
                 <div className="flex-auto bg-white lg:px-8 lg:pt-10 lg:pb-10 relative">
                     <div className="bg-white px-8 pt-10 pb-10">
-                    {order.map((e, i) => (
-                        <div key={e.order_id} >
-                            <h1 className="my-4">Order #{e.order_id}</h1>
-                            <span>
-                                <StatusBadge className="mx-1" status_id={e.status.orderState.order_state_id} />
-                                {moment(e.createAt).format('DD MMM YYYY')}
-                            </span>
-                            <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 ">
-                                <div>
-                                {e.orderDetails.map((orderDetail, j) => {
-                                    const product = products[orderDetail.product_id];
-                                    return (
-                                        <div className="my-5">
-                                            {product ? 
-                                            <div key={e.orderDetails.order_detail_id}>
-                                                <div className="font-semibold text-xl text-gray-900">
-                                                {product.name}
-                                                <span className="absolute inset-0"></span>
+                    {isLoading && <div><Spin className="mx-2"/>Fetching Data</div>}
+                        {error && <div><Alert
+                            message="Something Wrong"
+                            description={"can't fetch order detail: "+error.message}
+                            type="error"
+                            showIcon
+                        /></div>}
+                    {!isLoading && !error && !order.length && <div>Order not found</div>}
+                    {!isLoading && order.length > 0 ? (
+                        order.map((e, i) => (
+                            <div key={e?.order_id} >
+                                <h1 className="my-4">Order #{e?.order_id}</h1>
+                                <span>
+                                    <StatusBadge className="mx-1" status_id={e?.status?.orderState?.order_state_id} />
+                                    {e?.createAt?moment(e.createAt).format('DD MMM YYYY'):""}
+                                </span>
+                                <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 ">
+                                    <div>
+                                    {e?.orderDetails.map((orderDetail, j) => {
+                                        const product = products[orderDetail.product_id];
+                                        return (
+                                            <div className="my-5">
+                                                {product ? 
+                                                <div key={e.orderDetails.order_detail_id}>
+                                                    <div className="font-semibold text-xl text-gray-900">
+                                                    {product.name}
+                                                    <span className="absolute inset-0"></span>
+                                                    </div>
+                                                    <p className="mt-1 text-gray-800">Qty : {orderDetail.quantity}</p>
+                                                    <p className="mt-1 text-gray-800">Price : Rp{orderDetail.sale_price}</p>
                                                 </div>
-                                                <p className="mt-1 text-gray-800">Qty : {orderDetail.quantity}</p>
-                                                <p className="mt-1 text-gray-800">Price : Rp{orderDetail.sale_price}</p>
+                                                : 
+                                                'Product not found'
+                                                }
                                             </div>
-                                            : 
-                                            'Product not found'
-                                            }
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 href="#" className="block font-semibold text-gray-900">
+                                        Total
+                                    </h5>
+                                    <p className="mt-1 text-4xl font-semibold">Rp{e?.total}</p>
                                 </div>
                             </div>
-                            <div>
-                                <h5 href="#" className="block font-semibold text-gray-900">
-                                    Total
-                                </h5>
-                                <p className="mt-1 text-4xl font-semibold">Rp{e.total}</p>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    ):
+                        "Order not found"
+                    }
                     </div>
                 </div>
             </div>
