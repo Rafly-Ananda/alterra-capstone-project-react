@@ -24,7 +24,6 @@ export default function HomeClient() {
                                     <div
                                         class="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
                                         <div class="flex items-center space-x-6 lg:space-x-8">
-
                                         </div>
                                     </div>
                                 </div>
@@ -46,16 +45,6 @@ export default function HomeClient() {
                         Be the first to know when our latest GPU arrives. Sign up for our newsletter and get exclusive access to
                         pre-order.
                     </p>
-                    <div className="mt-8">
-                        <form action="#" method="POST" className="sm:flex">
-                            <input aria-label="Email address" type="email" required
-                                className="appearance-none w-full px-5 py-3 mb-3 sm:max-w-xs sm:mr-3"
-                                placeholder="Enter your email" />
-                            <button type="submit"
-                                className="w-full bg-indigo-600 text-white px-5 py-3 rounded-md font-medium hover:bg-indigo-700 sm:w-auto">Sign
-                                Up</button>
-                        </form>
-                    </div>
                 </div>
             </div>
              {/* Testimonials Section */}

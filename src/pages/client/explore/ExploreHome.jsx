@@ -12,25 +12,11 @@ export default function ExploreHome() {
 	const [error, setError] = useState(null);
 	const [products, setProducts] = useState([]);
 
-    // const fetchProducts = async () => {
-	// 	setIsLoading(true);
-	// 	try {
-	// 		const res = await axios.get(productServiceUrl);
-	// 		setProducts(res.data.data);
-	// 	} catch (e) {
-	// 		console.log(e.message);
-	// 		setError(e);
-	// 	} finally {
-	// 		setIsLoading(false);
-	// 	}
-	// };
     const fetchProducts = async () => {
         setIsLoading(true);
         try {
             const res = await axios.get(productServiceUrl)
             const productsWithImages = await Promise.all(res.data.data.map(async product => {
-            console.log(res.data)
-            console.log(product.image)
             const imageUrlResponse = await axios.get(`http://localhost:8084/api/v1/s3/${product.images[0]}`);
             return {
                 ...product,
@@ -39,7 +25,6 @@ export default function ExploreHome() {
             }));
             setProducts(productsWithImages);
         } catch (e) {
-            console.log(e.message);
             setError(e);
         } finally {
             setIsLoading(false);
@@ -48,7 +33,6 @@ export default function ExploreHome() {
     useEffect(() => {
 		fetchProducts();
 	}, []);
-    console.log(products);
     return (
         <>
             <div className="p-8">

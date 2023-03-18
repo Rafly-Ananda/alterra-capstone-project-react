@@ -23,7 +23,6 @@ export default function OrderClientHome() {
 			const res = await axios.get(orderServiceUrl);
 			setOrders(res.data.data);
 		} catch (e) {
-			console.log(e.message);
 			setError(e);
 		} finally {
 			setIsLoading(false);
@@ -77,7 +76,7 @@ export default function OrderClientHome() {
 					'Content-Type': 'application/json',
 					'Authorization': 'Bearer xxxxxxx'
 				}
-				axios.post(orderServiceUrl+"/cancel-state-order/"+order_id, {
+				axios.put("http://localhost:8085/api/v1/orders/cancel-state-order/1", {
 					headers: headers
 				})
 				.then((response) => {
@@ -92,7 +91,7 @@ export default function OrderClientHome() {
 				})
 			},
 			onCancel() {
-			console.log('Cancel');
+				console.log('Cancel');
 			},
 		});
 	}

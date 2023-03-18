@@ -1,12 +1,16 @@
 import React from "react";
-import { Spin,Alert,Button,InputNumber } from 'antd';
+import { Spin,Alert,Button,InputNumber,notification } from 'antd';
 import { useParams,Link,useLocation } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { LeftOutlined } from '@ant-design/icons';
 import axios from "axios";
 import moment from "moment";
 
+import { addToCart } from '../../../redux/slice/cartSlice';
+import { useDispatch,useSelector } from 'react-redux';
+
 const  productServiceUrl = "http://localhost:8084/api/v1/products";
+const  amazonS3ServiceUrl = "http://localhost:8084/api/v1/s3";
 
 export default function ProductClientDetail() {
     const { id } = useParams();
@@ -14,13 +18,13 @@ export default function ProductClientDetail() {
 	const [error, setError] = useState(null);
 	const [product, setProduct] = useState([]);
 
+
     const fetchProducts = async () => {
         setIsLoading(true);
         try {
             const res = await axios.get(productServiceUrl+"/"+id);
             const productsWithImages = await Promise.all(res.data.data.map(async product => {
-                console.log(product);
-            const imageUrlResponse = await axios.get(`http://localhost:8084/api/v1/s3/${product.product.images}`);
+            const imageUrlResponse = await axios.get(amazonS3ServiceUrl+"/"+product.product.images);
             return {
                 ...product,
                 imageUrl: imageUrlResponse.data.data[0]
@@ -28,16 +32,29 @@ export default function ProductClientDetail() {
             }));
             setProduct(productsWithImages);
         } catch (e) {
-            console.log(e.message);
             setError(e);
         } finally {
             setIsLoading(false);
         }
-        };
+    };
     useEffect(() => {
 		fetchProducts();
 	}, []);
-    console.log(product)
+
+    const cart = useSelector(state => state.cart);
+    const [quantityAdded, setQuantityAdded] = useState(1);
+    const dispatch = useDispatch()
+    const handleAddToCart = () =>{
+        dispatch(addToCart({ productAdded: parseInt(id), quantityAdded: parseInt(quantityAdded) }))
+        sendNotification('success','Added to cart','the Product #'+id+' has been added to cart')
+    }
+
+    const sendNotification = (type,message,description) => {
+		notification[type]({
+			message: message,
+			description: description,
+		});
+	};
     return(
         <>
         <div className="p-8">
@@ -78,9 +95,12 @@ export default function ProductClientDetail() {
                                 <section aria-labelledby="options-heading" className="mt-10">
                                     <p className="my-2 font-medium">Stock : {e.product.stock}</p>
                                     <form>
-                                        <InputNumber min={1} max={e.product.stock} defaultValue={1} />
+                                        <InputNumber min={1} max={e.product.stock} defaultValue={1} onChange={(value) => {
+                                            setQuantityAdded(value);
+                                        }}  />
                                         <Button type="submit" size="large"
-                                            className="mt-6 flex w-full items-center justify-center rounded-md border bg-indigo-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 ">
+                                            className="mt-6 flex w-full items-center justify-center rounded-md border bg-indigo-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
+                                            onClick={() => handleAddToCart()}>
                                                 Add to Cart
                                         </Button>
                                     </form>

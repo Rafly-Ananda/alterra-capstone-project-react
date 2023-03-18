@@ -27,7 +27,6 @@ export default function OrderDetail() {
 			} catch (e) {
                 setError(e);
                 setIsLoading(false);
-				console.log(e);
 			} finally {
 				setIsLoading(false);
 			}
@@ -64,7 +63,6 @@ export default function OrderDetail() {
 			});
 		});
 	}, [order, products]);
-    console.log(order)
   return (
     <>
         <div className="p-8">
@@ -78,7 +76,7 @@ export default function OrderDetail() {
                 <LeftOutlined type="left" />Back to Orders
             </Button>
             <div className="flex flex-col lg:flex-row h-full">
-                <div className="flex-3 lg:p-8 bg-white">
+                <div className="flex-3 lg:p-8 bg-white shadow rounded-md m-1">
                     <div className="bg-white px-8 pt-10 pb-10 ">
                         {isLoading && <div><Spin className="mx-2"/>Fetching Data</div>}
                         {error && <div><Alert
@@ -100,8 +98,8 @@ export default function OrderDetail() {
                         )}
                     </div>
                 </div>
-                <div className="flex-auto bg-white lg:px-8 lg:pt-10 lg:pb-10 relative">
-                    <div className="bg-white px-8 pt-10 pb-10">
+                <div className="flex-auto bg-white lg:px-8 lg:pt-10 lg:pb-10 rounded-md relative shadow m-1">
+                    <div className="bg-white">
                     {isLoading && <div><Spin className="mx-2"/>Fetching Data</div>}
                         {error && <div><Alert
                             message="Something Wrong"
@@ -113,6 +111,8 @@ export default function OrderDetail() {
                     {!isLoading && order.length > 0 ? (
                         order.map((e, i) => (
                             <div key={e?.order_id} >
+                                <Alert message="Waiting for payment, please make the payment and confirm your payment" type="warning" />
+                                <Button type="primary my-1">Confirm Payment</Button>
                                 <h1 className="my-4">Order #{e?.order_id}</h1>
                                 <span>
                                     <StatusBadge className="mx-1" status_id={e?.status?.orderState?.order_state_id} />

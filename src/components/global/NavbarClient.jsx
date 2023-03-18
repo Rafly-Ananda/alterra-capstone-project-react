@@ -1,10 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu,Button } from "antd";
+import { Menu,Button,Badge,Avatar } from "antd";
 import { NavLink } from "react-router-dom";
 import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 
 const NavbarClient = () => {
   const { pathname } = useLocation();
+  const cart = useSelector((state) => state.cart.cart);
+  const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
   return (
     <nav className="navbar">
       <Menu mode="horizontal" selectedKeys={[pathname]}>
@@ -24,7 +27,11 @@ const NavbarClient = () => {
         </Menu.Item>
         <Menu.Item key="/cart" style={{ marginLeft: 'auto' }}>
             <NavLink to="/cart">
-                <ShoppingCartOutlined /> cart
+                <Badge count={totalQuantity}>
+                    <Avatar shape="square" className="bg-indigo-500" >
+                        <ShoppingCartOutlined /> 
+                    </Avatar>
+                </Badge>
             </NavLink>
         </Menu.Item>
         <Menu.Item key="/user">

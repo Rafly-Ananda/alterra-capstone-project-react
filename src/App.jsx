@@ -27,10 +27,12 @@ import ClientLayout from "./components/layouts/ClientLayout";
 import OrderClientOutlet from "./pages/client/order/OrderClientOutlet";
 import OrderClientHome from "./pages/client/order/OrderClientHome";
 import OrderClientDetail from "./pages/client/order/OrderClientDetail";
+import OrderClientPayment from "./pages/client/order/OrderClientPayment";
 import ExploreHome from "./pages/client/explore/ExploreHome";
 import ProductClientDetail from "./pages/client/product/ProductClientDetail";
 import LoginForm from "./components/global/LoginForm";
 import HomeClient from "./pages/client/HomeClient";
+import CartHome from "./pages/client/cart/CartHome";
 
 export default function App() {
     return (
@@ -49,10 +51,12 @@ export default function App() {
             <Route path="" element={<HomeClient />} />
             <Route path="orders" element={<OrderClientOutlet />}>
                 <Route path="" element={<OrderClientHome />} />
+                <Route path="confirm-payment/:id" element={<OrderClientPayment />} />
                 <Route path=":id" element={<OrderClientDetail />} />
             </Route>
             <Route path="/explore" element={<ExploreHome />} />
             <Route path="/products/:id" element={<ProductClientDetail />} />
+            <Route path="/cart" element={<CartHome />} />
         </Route>
       <Route path="/login" element={<LoginForm />}></Route>
     </Routes>
