@@ -1,5 +1,5 @@
 import React from "react";
-import { Spin,Alert,Button,Card,InputNumber,notification } from 'antd';
+import { Spin,Alert,Button,Card,InputNumber,notification,message } from 'antd';
 import { useDispatch,useSelector } from 'react-redux';
 import { useState,useEffect } from "react";
 
@@ -8,12 +8,17 @@ import axios from "axios";
 import { DeleteOutlined,CloseOutlined } from '@ant-design/icons';
 
 import { addToCart,deleteItemCart,editItemCart,clearCart } from '../../../redux/slice/cartSlice';
+import {
+    productServiceUrl,
+    categoryServiceUrl,
+    s3ServiceUrl,
+} from "../../../config/config";
 
-const  productServiceUrl = "http://localhost:8084/api/v1/products";
-const  amazonS3ServiceUrl = "http://localhost:8084/api/v1/s3";
-const OrderServiceUrl = 'http://localhost:8085/api/v1/orders';
 
 export default function CartHome() {
+    const { user } = useSelector((state) => state.user);
+    const { isLoggedIn } = useSelector((state) => state.user);
+
     const cart = useSelector(state => state.cart);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +36,7 @@ export default function CartHome() {
                     cart.cart.map(async (cart_product) => {
                         const productDetailsResponse = await axios.get(`${productServiceUrl}/${cart_product.product_id}`);
                         const productDetails = productDetailsResponse.data.data[0];
-                        const productImageResponse = await axios.get(`${amazonS3ServiceUrl}/${productDetails.product.images}`);
+                        const productImageResponse = await axios.get(`${s3ServiceUrl}/${productDetails.product.images}`);
                         const productWithImage = {
                             ...productDetails,
                             imageUrl: productImageResponse.data.data[0],
@@ -77,31 +82,38 @@ export default function CartHome() {
     
 
     //Checkout Order
-    
-    const orderData = {
-        order: {
-        user_id: 999 // replace with the user ID of the current user
-        },
-        orderDetail: cart.cart.map(item => ({
-            product_id: parseInt(item.product_id),
-            quantity: parseInt(item.quantity)
-        }))
-    };
+    if(isLoggedIn){
+        const orderData = {
+            order: {
+            user_id: user.user.user_id // replace with the user ID of the current user
+            },
+            orderDetail: cart.cart.map(item => ({
+                product_id: parseInt(item.product_id),
+                quantity: parseInt(item.quantity)
+            }))
+        };
+    }
     
     const checkoutOrder = async () => {
-        setIsLoading(true);
-        try {
-            const response = await axios.post(OrderServiceUrl, orderData);
-            console.log(response.data);
-            handleClearCart()
-            sendNotification('success','Success','Checkout successfull, check the order tab to track your order')
-        } catch (error) {
-            setIsLoading(false);
-            console.log(error)
-            sendNotification('error','Success',error.response.data.message)
-        } finally {
-            setIsLoading(false);
+        if(isLoggedIn){
+            setIsLoading(true);
+            try {
+                const response = await axios.post(OrderServiceUrl, orderData);
+                console.log(response.data);
+                handleClearCart()
+                sendNotification('success','Success','Checkout successfull, check the order tab to track your order')
+            } catch (error) {
+                setIsLoading(false);
+                console.log(error)
+                sendNotification('error','Success',error.response.data.message)
+            } finally {
+                setIsLoading(false);
+            }
+        }else{
+            message.error("You haven't logged in, you must log in first");
+            
         }
+        
     };
 
     const sendNotification = (type,message,description) => {

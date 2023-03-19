@@ -7,9 +7,11 @@ import moment from "moment";
 import StatusBadge from "../../../components/global/StatusBadge";
 
 import { LeftOutlined } from '@ant-design/icons';
-
-const orderServiceUrl = "http://localhost:8085/api/v1/orders";
-const  productServiceUrl = "http://localhost:8084/api/v1/products";
+import {
+    productServiceUrl,
+    orderServiceUrl,
+    s3ServiceUrl,
+} from "../../../config/config";
 
 export default function OrderDetail() {
     const [isLoading, setIsLoading] = useState(false);

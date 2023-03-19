@@ -9,8 +9,11 @@ import { Form,Spin,Alert,Button,notification,Upload } from 'antd';
 import StatusBadge from "../../../components/global/StatusBadge";
 
 //inital variable
-const orderServiceUrl = "http://localhost:8085/api/v1/orders";
-const  productServiceUrl = "http://localhost:8084/api/v1/products";
+import {
+    productServiceUrl,
+    orderServiceUrl,
+    s3ServiceUrl,
+} from "../../../config/config";
 
 export default function OrderClientPayment() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +36,7 @@ export default function OrderClientPayment() {
             formData.append("images", []);
         }
         try {
-            await axios.post(productServiceUrl, formData, {
+            await axios.post(orderServiceUrl+"/payment/1", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -76,7 +79,7 @@ return (
 			</div>
 			<div className="overflow-y-auto max-h-full p-2">
             <Form>
-                <Upload {...props}>
+                <Upload>
                     <Button icon={<UploadOutlined />}>Click to Upload</Button>
                 </Upload>
                 <div className="hidden">

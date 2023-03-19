@@ -1,7 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import {
-  HomeOutlined,
   SettingOutlined,
   DatabaseOutlined,
   LogoutOutlined,
@@ -11,6 +9,9 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Menu, Button } from "antd";
+import { logoutReducer } from "../../redux/slice/usersSlice";
+import { useDispatch } from "react-redux";
+import { message } from "antd";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -26,7 +27,6 @@ const items = [
   {
     type: "group",
     children: [
-      getItem("Dashboard", "home", <HomeOutlined />),
       getItem("Items", "items", <DatabaseOutlined />, [
         getItem("Products", "products"),
         getItem("Categories", "categories"),
@@ -49,9 +49,15 @@ const items = [
 ];
 
 export default function SideNav() {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const onClick = (e) => {
-    if (e.key === "logout") return;
+    if (e.key === "logout") {
+      dispatch(logoutReducer());
+      message.success("You have been logged out");
+      return;
+    }
 
     if (e.keyPath.length > 1) {
       e.key === "home"

@@ -3,28 +3,46 @@ import { Button, Form, Input } from "antd";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authServiceUrl } from "../../config/config";
+import { useNavigate } from "react-router-dom";
+import { message,Typography } from "antd";
+import { useSelector } from "react-redux";
 
-// import { loginStart, loginFailure, loginSuccess } from "../../redux/slice/usersSlice";
-// dispatch(loginSuccess(res.data.data[0]));
+import {
+  loginStart,
+  loginFailure,
+  loginSuccess,
+} from "../../redux/slice/usersSlice";
 
 export default function LoginForm() {
+  const { Title } = Typography;
+  const { Text, Link } = Typography;
+  const { user } = useSelector((state) => state);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const onFinish = async (values) => {
+    dispatch(loginStart());
     try {
-      const res = await axios.post(
-        `http://localhost:8080/api/v1/auth/login`,
-        values
-      );
-      console.log(res.data.data[0]);
-    } catch (e) {}
+      const res = await axios.post(`${authServiceUrl}/login`, values);
+      dispatch(loginSuccess(res.data.data[0]));
+      message.success("You are logged in");
+      navigate("/");
+    } catch (e) {
+      dispatch(loginFailure());
+      message.error("Login failed");
+    }
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
+  useEffect(() => {
+    if (user.isLoggedIn) navigate("/");
+  }, [user]);
+
   return (
-    <div className="w-full h-screen flex items-center justify-center">
+    <div className="w-full h-screen flex flex-col items-center justify-center">
+      <Title level={4}>Login</Title>
       <Form
         name="basic"
         labelCol={{
@@ -73,11 +91,18 @@ export default function LoginForm() {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit">
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={user.isUsersFetching}
+          >
             Submit
           </Button>
         </Form.Item>
       </Form>
+      <Link href="/register">
+          Didn't have an account ? Register
+      </Link>
     </div>
   );
 }

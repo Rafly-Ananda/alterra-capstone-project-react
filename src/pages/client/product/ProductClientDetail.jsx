@@ -8,9 +8,12 @@ import moment from "moment";
 
 import { addToCart } from '../../../redux/slice/cartSlice';
 import { useDispatch,useSelector } from 'react-redux';
+import {
+    productServiceUrl,
+    categoryServiceUrl,
+    s3ServiceUrl,
+} from "../../../config/config";
 
-const  productServiceUrl = "http://localhost:8084/api/v1/products";
-const  amazonS3ServiceUrl = "http://localhost:8084/api/v1/s3";
 
 export default function ProductClientDetail() {
     const { id } = useParams();
@@ -24,7 +27,7 @@ export default function ProductClientDetail() {
         try {
             const res = await axios.get(productServiceUrl+"/"+id);
             const productsWithImages = await Promise.all(res.data.data.map(async product => {
-            const imageUrlResponse = await axios.get(amazonS3ServiceUrl+"/"+product.product.images);
+            const imageUrlResponse = await axios.get(s3ServiceUrl+"/"+product.product.images);
             return {
                 ...product,
                 imageUrl: imageUrlResponse.data.data[0]

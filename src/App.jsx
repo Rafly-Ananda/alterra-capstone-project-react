@@ -18,8 +18,6 @@ import UserHome from "./pages/admin/users/UserHome";
 import OrderHome from "./pages/admin/orders/OrderHome";
 
 // No Domain
-import Home from "./pages/admin/Home";
-import Payments from "./pages/admin/Payments";
 import NotFound from "./pages/admin/NotFound";
 
 /** Components - Client */
@@ -33,12 +31,16 @@ import ProductClientDetail from "./pages/client/product/ProductClientDetail";
 import LoginForm from "./components/global/LoginForm";
 import HomeClient from "./pages/client/HomeClient";
 import CartHome from "./pages/client/cart/CartHome";
+import RegisterForm from "./components/global/RegisterForm";
 
 export default function App() {
     return (
     <Routes>
         <Route path="/admin" element={<AdminLayout />}>
-            <Route path="" element={<Home />} />
+            <Route
+                path=""
+                element={<Navigate to="/admin/items/products" replace />}
+            />
             <Route path="items" element={<ProductOutlet />}>
                 <Route path="products" element={<ProductHome />} />
                 <Route path="categories" element={<ProductCategories />} />
@@ -58,7 +60,9 @@ export default function App() {
             <Route path="/products/:id" element={<ProductClientDetail />} />
             <Route path="/cart" element={<CartHome />} />
         </Route>
-      <Route path="/login" element={<LoginForm />}></Route>
+        <Route path="/register" element={<RegisterForm />}></Route>
+        <Route path="/login" element={<LoginForm />}></Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  );
+    );
 }

@@ -4,8 +4,10 @@ import moment from "moment";
 import { useState,useEffect } from "react";
 import { Card,Button,Spin,Alert,notification } from 'antd';
 import { useParams,Link,useLocation } from "react-router-dom";
-
-const  productServiceUrl = "http://localhost:8084/api/v1/products";
+import {
+    productServiceUrl,
+    s3ServiceUrl,
+  } from "../../../config/config";
 
 export default function ExploreHome() {
     const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +19,7 @@ export default function ExploreHome() {
         try {
             const res = await axios.get(productServiceUrl)
             const productsWithImages = await Promise.all(res.data.data.map(async product => {
-            const imageUrlResponse = await axios.get(`http://localhost:8084/api/v1/s3/${product.images[0]}`);
+            const imageUrlResponse = await axios.get(s3ServiceUrl+"/"+product.images[0]);
             return {
                 ...product,
                 imageUrl: imageUrlResponse.data.data[0]

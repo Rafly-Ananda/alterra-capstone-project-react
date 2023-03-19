@@ -9,8 +9,11 @@ import StatusBadge from "../../../components/global/StatusBadge";
 
 //inital variable
 const confirm = Modal.confirm;
-const orderServiceUrl = "http://localhost:8085/api/v1/orders";
-const  productServiceUrl = "http://localhost:8084/api/v1/products";
+import {
+    productServiceUrl,
+    orderServiceUrl,
+    s3ServiceUrl,
+} from "../../../config/config";
 
 export default function OrderClientHome() {
 	const [isLoading, setIsLoading] = useState(false);

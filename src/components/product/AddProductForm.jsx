@@ -1,9 +1,9 @@
-import axios from "axios";
 import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useState, useEffect } from "react";
 import ImageUploader from "./ImageUploader";
 const { TextArea } = Input;
 import { categoryServiceUrl } from "../../config/config";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 export default function AddProductForm({
   fileList,
@@ -13,6 +13,7 @@ export default function AddProductForm({
   form,
 }) {
   const [productCategory, setProductCategory] = useState([]);
+  const axios = useAxiosPrivate();
 
   useEffect(() => {
     (async () => {
