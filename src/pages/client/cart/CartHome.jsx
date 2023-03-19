@@ -2,15 +2,15 @@ import React from "react";
 import { Spin,Alert,Button,Card,InputNumber,notification,message } from 'antd';
 import { useDispatch,useSelector } from 'react-redux';
 import { useState,useEffect } from "react";
-
-import axios from "axios";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 import { DeleteOutlined,CloseOutlined } from '@ant-design/icons';
 
 import { addToCart,deleteItemCart,editItemCart,clearCart } from '../../../redux/slice/cartSlice';
 import {
     productServiceUrl,
-    categoryServiceUrl,
+    orderServiceUrl,
     s3ServiceUrl,
 } from "../../../config/config";
 
@@ -26,7 +26,8 @@ export default function CartHome() {
     const [cartWithProduct, setCartWithProduct] = useState({});
     const [TotalAmout, setTotalAmount] = useState(0);
     const dispatch = useDispatch();
-
+    let navigate = useNavigate();
+    const axios = useAxiosPrivate();
     
     //cart management
     const fetchCartWithProducts = async () => {
@@ -80,10 +81,10 @@ export default function CartHome() {
     }
 
     
-
+    let orderData = "";
     //Checkout Order
     if(isLoggedIn){
-        const orderData = {
+        orderData = {
             order: {
             user_id: user.user.user_id // replace with the user ID of the current user
             },
@@ -98,7 +99,7 @@ export default function CartHome() {
         if(isLoggedIn){
             setIsLoading(true);
             try {
-                const response = await axios.post(OrderServiceUrl, orderData);
+                const response = await axios.post(orderServiceUrl, orderData);
                 console.log(response.data);
                 handleClearCart()
                 sendNotification('success','Success','Checkout successfull, check the order tab to track your order')
@@ -111,7 +112,7 @@ export default function CartHome() {
             }
         }else{
             message.error("You haven't logged in, you must log in first");
-            
+            navigate("/login");
         }
         
     };

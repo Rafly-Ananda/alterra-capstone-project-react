@@ -1,72 +1,61 @@
 import React, { Component } from "react";
-import axios from "axios";
-import moment from "moment";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useState,useEffect } from "react";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined,LeftOutlined,PlusOutlined } from '@ant-design/icons';
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 // Components
-import { Form,Spin,Alert,Button,notification,Upload } from 'antd';
-import StatusBadge from "../../../components/global/StatusBadge";
+import { Form,Spin,Alert,Button,notification,Upload,Card } from 'antd';
 
 //inital variable
 import {
-    productServiceUrl,
     orderServiceUrl,
-    s3ServiceUrl,
 } from "../../../config/config";
 
 export default function OrderClientPayment() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
+    const [fileList, setFileList] = useState(null);
 
+    const { id } = useParams();
+
+    const axios = useAxiosPrivate();
+
+    let navigate = useNavigate();
 	const sendNotification = (type,message,description) => {
 		notification[type]({
 			message: message,
 			description: description,
 		});
 	};
+    const handleFileChange = ({ fileList }) => {
+    setFileList(fileList);
+    };
 
     const onSubmit = async () => {
+        console.log(fileList)
         setIsLoading(true);
-        if (fileList.length > 0) {
-            fileList.forEach((e) => {
-                formData.append("images", e.originFileObj);
-            });
-        } else {
-            formData.append("images", []);
-        }
+        const formData = new FormData();
+        fileList.forEach((file) => {
+            formData.append("images", file.originFileObj);
+        });
+        console.log(formData);
         try {
-            await axios.post(orderServiceUrl+"/payment/1", formData, {
+            await axios.put(orderServiceUrl + "/payment/" + id, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            await fetchProduct();
-            handleCancel();
+            sendNotification('success', 'Upload Success', 'Payment receipt has been uploaded')
+            navigate("/orders/" + id)
         } catch (e) {
-            console.log(e.message);
+            console.log(e);
+            sendNotification('error', 'Upload Failed', 'Failed uploading payment receipt :' + e.message)
         } finally {
             setIsLoading(false);
         }
     };
 
-    const props = {
-        name: 'file',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-        headers: {
-            authorization: 'authorization-text',
-        },
-        onChange(info) {
-            if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
 
 return (
 	<>
@@ -78,20 +67,36 @@ return (
 				</div>
 			</div>
 			<div className="overflow-y-auto max-h-full p-2">
-            <Form>
-                <Upload>
-                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
-                <div className="hidden">
-                <Button
-                    type="primary"
-                    size="large"
-                    htmlType="submit"
-                >
-                    Submit
-                </Button>
-                </div>
-            </Form>
+            <Button href={"/orders/"+id} type="primary my-4">
+                <LeftOutlined type="left" />Back to Order Detail
+            </Button>
+            <Card className="p-5 shadow rounded-md">
+                <Form>
+                <Form.Item label="Upload" valuePropName="fileList">
+                <Upload
+                    beforeUpload={() => false}
+                    onChange={handleFileChange}
+                    fileList={fileList}
+                    listType="picture-card"
+                    >
+                    {fileList ? null : (
+                        <div>
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                        </div>
+                    )}
+                    </Upload>
+                </Form.Item>
+                    <Button
+                        type="submit"
+                        size="large"
+                        className="mt-6  items-center justify-center rounded-md border bg-green-600 py-3 px-8 font-medium text-white hover:bg-indigo-700"
+                        onClick={onSubmit}
+                    >
+                        Upload Payment Receipt
+                    </Button>
+                </Form>
+            </Card>
 			</div>
 		</div>
 	</>

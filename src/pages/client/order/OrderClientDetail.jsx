@@ -2,7 +2,7 @@ import React from "react";
 import { Steps,Spin,Alert,Button } from 'antd';
 import { useParams,Link } from "react-router-dom";
 import { useState,useEffect } from "react";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import moment from "moment";
 import StatusBadge from "../../../components/global/StatusBadge";
 
@@ -16,6 +16,8 @@ import {
 export default function OrderDetail() {
     const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
+
+    const axios = useAxiosPrivate();
 
     const { id } = useParams();
 	const [order, setOrders] = useState([]);
@@ -131,7 +133,6 @@ export default function OrderDetail() {
                                     <>  
                                         <Link to={"/orders/confirm-payment/"+e?.order_id}>
                                             <Alert message="Waiting for Payment approval from admin, please kindly wait for the process of your order" type="warning" />
-                                            <Button type="primary my-1">Confirm Payment</Button>
                                         </Link>
                                     </>
                                     )

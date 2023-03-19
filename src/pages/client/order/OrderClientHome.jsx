@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
 import moment from "moment";
 import { useState,useEffect } from "react";
+import { useSelector } from 'react-redux';
+
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 // Components
 import { Card,Button,Spin,Alert,notification,Modal } from 'antd';
@@ -19,13 +21,14 @@ export default function OrderClientHome() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [order, setOrders] = useState([]);
+	const { user } = useSelector((state) => state.user);
 
-	let user = 999;
+	const axios = useAxiosPrivate();
 
 	const fetchOrders = async () => {
 		setIsLoading(true);
 		try {
-			const res = await axios.get(orderServiceUrl+"/user/"+user);
+			const res = await axios.get(orderServiceUrl+"/user/"+user?.user.user_id);
 			setOrders(res.data.data);
 		} catch (e) {
 			setError(e);
