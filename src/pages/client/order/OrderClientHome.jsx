@@ -17,10 +17,12 @@ export default function OrderClientHome() {
 	const [error, setError] = useState(null);
 	const [order, setOrders] = useState([]);
 
+	let user = 999;
+
 	const fetchOrders = async () => {
 		setIsLoading(true);
 		try {
-			const res = await axios.get(orderServiceUrl);
+			const res = await axios.get(orderServiceUrl+"/user/"+user);
 			setOrders(res.data.data);
 		} catch (e) {
 			setError(e);
@@ -76,7 +78,7 @@ export default function OrderClientHome() {
 					'Content-Type': 'application/json',
 					'Authorization': 'Bearer xxxxxxx'
 				}
-				axios.put("http://localhost:8085/api/v1/orders/cancel-state-order/1", {
+				axios.put(orderServiceUrl+"/cancel-state-order/"+order_id, {
 					headers: headers
 				})
 				.then((response) => {

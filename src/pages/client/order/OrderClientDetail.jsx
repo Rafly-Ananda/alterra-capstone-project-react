@@ -1,6 +1,6 @@
 import React from "react";
 import { Steps,Spin,Alert,Button } from 'antd';
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import { useState,useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -92,6 +92,9 @@ export default function OrderDetail() {
                                 <Steps title="On Process" description="Packaging Process" />
                                 <Steps title="On Delivery" description="Order on Delivery" />
                                 <Steps title="Delivered" description="Order delivered" />
+                                {e?.status?.orderState?.order_state_id == 5 && (
+                                    <Steps title="Cancelled" description="Order Cancelled" />
+                                )}
                             </Steps>
                             </>
                             )
@@ -111,8 +114,28 @@ export default function OrderDetail() {
                     {!isLoading && order.length > 0 ? (
                         order.map((e, i) => (
                             <div key={e?.order_id} >
-                                <Alert message="Waiting for payment, please make the payment and confirm your payment" type="warning" />
-                                <Button type="primary my-1">Confirm Payment</Button>
+                                {e?.status?.orderState?.order_state_id == 1 && e?.status?.payment_proof == null ? (
+                                    <>  
+                                        <Link to={"/orders/confirm-payment/"+e?.order_id}>
+                                            <Alert message="Waiting for payment, please make the payment and confirm your payment" type="warning" />
+                                            <Button type="primary my-1">Confirm Payment</Button>
+                                        </Link>
+                                    </>
+                                    )
+                                    :
+                                    ""
+                                }
+                                {e?.status?.orderState?.order_state_id == 1 && e?.status?.payment_proof != null ? (
+                                    <>  
+                                        <Link to={"/orders/confirm-payment/"+e?.order_id}>
+                                            <Alert message="Waiting for Payment approval from admin, please kindly wait for the process of your order" type="warning" />
+                                            <Button type="primary my-1">Confirm Payment</Button>
+                                        </Link>
+                                    </>
+                                    )
+                                    :
+                                    ""
+                                }
                                 <h1 className="my-4">Order #{e?.order_id}</h1>
                                 <span>
                                     <StatusBadge className="mx-1" status_id={e?.status?.orderState?.order_state_id} />

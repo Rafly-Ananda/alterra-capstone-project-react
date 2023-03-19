@@ -1,13 +1,17 @@
 import React from "react";
-import { Link, useLocation } from 'react-router-dom';
 import { Spin,Alert,Button,Card,InputNumber,notification } from 'antd';
 import { useDispatch,useSelector } from 'react-redux';
 import { useState,useEffect } from "react";
-import { DeleteOutlined,CloseOutlined } from '@ant-design/icons';
+
 import axios from "axios";
+
+import { DeleteOutlined,CloseOutlined } from '@ant-design/icons';
+
 import { addToCart,deleteItemCart,editItemCart,clearCart } from '../../../redux/slice/cartSlice';
+
 const  productServiceUrl = "http://localhost:8084/api/v1/products";
 const  amazonS3ServiceUrl = "http://localhost:8084/api/v1/s3";
+const OrderServiceUrl = 'http://localhost:8085/api/v1/orders';
 
 export default function CartHome() {
     const cart = useSelector(state => state.cart);
@@ -18,8 +22,7 @@ export default function CartHome() {
     const [TotalAmout, setTotalAmount] = useState(0);
     const dispatch = useDispatch();
 
-    const OrderServiceUrl = 'http://localhost:8085/api/v1/orders';
-
+    
     //cart management
     const fetchCartWithProducts = async () => {
         setIsLoading(true);
@@ -71,12 +74,7 @@ export default function CartHome() {
         sendNotification('success','Success','Cart sucessfully cleared')
     }
 
-    const sendNotification = (type,message,description) => {
-		notification[type]({
-			message: message,
-			description: description,
-		});
-	};
+    
 
     //Checkout Order
     
@@ -91,14 +89,27 @@ export default function CartHome() {
     };
     
     const checkoutOrder = async () => {
+        setIsLoading(true);
         try {
             const response = await axios.post(OrderServiceUrl, orderData);
-            sendNotification('success','Success',response.data)
+            console.log(response.data);
+            handleClearCart()
+            sendNotification('success','Success','Checkout successfull, check the order tab to track your order')
         } catch (error) {
-            sendNotification('fail','Success',error)
+            setIsLoading(false);
+            console.log(error)
+            sendNotification('error','Success',error.response.data.message)
+        } finally {
+            setIsLoading(false);
         }
     };
 
+    const sendNotification = (type,message,description) => {
+		notification[type]({
+			message: message,
+			description: description,
+		});
+	};
     return (
         <>
             <div className="p-8">
@@ -120,7 +131,7 @@ export default function CartHome() {
                         ) : cartWithProduct.length > 0 ? (
                             cartWithProduct.map((cart, i) => (
                             <div key={cart.product.product_id}>
-                                <Card  className="rounded-md shadow" >
+                                <Card  className="rounded-md shadow mb-1" >
                                 <div className="flex flex-row flex-wrap">
                                     <div className="flex-1 bg-white rounded-md p-5">
                                         <div className="max-h-full flex justify-center items-center h-24 ">
@@ -152,14 +163,14 @@ export default function CartHome() {
                         <Alert message="Cart is empty" type="warning" />
                     )}
                     </div>
-                    <Card className="flex-1 bg-white rounded-md p-1 ml-2 shadow max-h-[250px]">
+                    <Card className="flex-1 bg-white rounded-md p-1 m-1 shadow max-h-[250px]">
                         Total
                         <p className="text-xl mb-3"> Items</p>
                         Total Amount
                         <p className="text-2xl font-bold mb-3">Rp{TotalAmout}</p>
                         <Button type="submit" size="large"
                             className="mt-6 flex w-full items-center justify-center rounded-md border bg-green-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
-                            onClick="">
+                            onClick={()=>checkoutOrder()}>
                                 Checkout
                         </Button>
                     </Card>

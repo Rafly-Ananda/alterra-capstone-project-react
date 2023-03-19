@@ -52,7 +52,7 @@ export default function ExploreHome() {
                 products.map((product, i) => (
                     <>
                         <Card key={i} className="rounded-md shadow m-2" style={{ width: 240 }} bodyStyle={{ padding: 0 }}>
-                            <Link to={"/products/"+product.product_id}>
+                            <Link to={"/products/"+product.product_id} className="no-underline">
                             <div className="custom-image">
                                 <div className="relative h-60">
                                     <img className="absolute top-0 left-0 w-full h-full rounded-md object-cover" 
@@ -60,9 +60,15 @@ export default function ExploreHome() {
                                     alt="product-images" />
                                 </div>
                             </div>
-                            <div className="custom-card p-2">
-                            <h3>{product.name}</h3>
-                            <p>Rp{product.price}</p>
+                            <div className="custom-card p-4">
+                            <p className="text-xl text-black mb-2">{product.name}</p>
+                            <p className="text-xl text-black font-semibold">Rp{product.price}</p>
+                            {product.stock == 0 && (
+                                <div className="mt-2">
+                                    <p className="text-red-500 font-semibold">Sold Out</p>
+                                </div>
+                            )}
+                            
                             </div>
                             </Link>
                         </Card>

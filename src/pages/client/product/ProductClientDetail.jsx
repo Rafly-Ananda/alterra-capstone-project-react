@@ -80,15 +80,12 @@ export default function ProductClientDetail() {
                             </div>
                             <div className="flex-auto bg-white p-5 lg:px-8 lg:pt-10 lg:pb-10 relative rounded-md">
                             <section aria-labelledby="information-heading" className="mt-2">
-                                    <h3 className="text-4xl font-semibold py-5">{e.product.name}</h3>
-                                    <p className="text-3xl text-gray-900">Rp{e.product.price}</p>
+                                    <h3 className="text-4xl py-5">{e.product.name}</h3>
+                                    <p className="text-3xl font-semibold text-gray-900">Rp{e.product.price}</p>
                                     <div className="mt-6">
-                                        <h4 className="sr-only">Reviews</h4>
-                                        <div className="flex items-center">
-                                            <div className="flex items-center">
-                                            </div>
-                                            <p>Description :</p>
-                                            <p className="my-2">{e.product.description}</p>
+                                        <div className="mt-6 flex flex-col">
+                                            <p className="text-md mb-2">Description:</p>
+                                            <p className="text-xl flex-1">{e.product.description}</p>
                                         </div>
                                     </div>
                                 </section>
@@ -98,11 +95,26 @@ export default function ProductClientDetail() {
                                         <InputNumber min={1} max={e.product.stock} defaultValue={1} onChange={(value) => {
                                             setQuantityAdded(value);
                                         }}  />
-                                        <Button type="submit" size="large"
-                                            className="mt-6 flex w-full items-center justify-center rounded-md border bg-indigo-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
-                                            onClick={() => handleAddToCart()}>
-                                                Add to Cart
-                                        </Button>
+                                        
+                                        {e.product.stock == 0 ? (
+                                            <>
+                                                <Button type="submit" size="large" disabled 
+                                                    className="mt-6 flex w-full items-center justify-center rounded-md border bg-gray-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
+                                                    >
+                                                        Sold Out
+                                                </Button>
+                                            </>
+                                        )
+                                        :
+                                            <>
+                                                <Button type="submit" size="large" 
+                                                    className="mt-6 flex w-full items-center justify-center rounded-md border bg-indigo-600 py-3 px-8 font-medium text-white "
+                                                    onClick={() => handleAddToCart()}>
+                                                        Add to Cart
+                                                </Button>
+                                            </>
+                                            
+                                        }
                                     </form>
                                 </section>
                             </div>

@@ -4,31 +4,31 @@ import { Link, useLocation } from 'react-router-dom';
 export default function HomeClient() {
     return (
         <>
-            <div class="relative overflow-hidden bg-white mt-5" style={{backgroundImage: "url('https://images.unsplash.com/photo-1627281795244-0f5db916344a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1985&q=80')"}}>
-                <div class="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
-                    <div class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
-                        <div class="sm:max-w-lg">
-                            <h1 class="font text-4xl font-bold tracking-tight text-white sm:text-6xl">Upgrade Your
+            <div className="relative overflow-hidden bg-white mt-5" style={{backgroundImage: "url('https://images.unsplash.com/photo-1627281795244-0f5db916344a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1985&q=80')"}}>
+                <div className="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
+                    <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
+                        <div className="sm:max-w-lg">
+                            <h1 className="font text-4xl font-bold tracking-tight text-white sm:text-6xl">Upgrade Your
                                 Tech at One-Stop.
                             </h1>
-                            <p class="mt-4 text-xl text-white">
+                            <p className="mt-4 text-xl text-white">
                                 Welcome to our computer store, where technology meets
                                 affordability! We offer a wide range of computer hardware and software products, all
                                 carefully selected to provide our customers with the best experience possible.
                             </p>
                         </div>
                         <div>
-                            <div class="mt-10">
+                            <div className="mt-10">
                                 <div aria-hidden="true"
-                                    class="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl">
+                                    className="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl">
                                     <div
-                                        class="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
-                                        <div class="flex items-center space-x-6 lg:space-x-8">
+                                        className="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
+                                        <div className="flex items-center space-x-6 lg:space-x-8">
                                         </div>
                                     </div>
                                 </div>
                                 <Link to="/explore"
-                                    class="inline-block rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-center font-medium text-white hover:bg-indigo-700">Shop
+                                    className="inline-block rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-center font-medium text-white hover:bg-indigo-700">Shop
                                     Collection
                                 </Link>
                             </div>
