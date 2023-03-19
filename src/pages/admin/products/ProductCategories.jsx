@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { Button, Form } from "antd";
 import AddCategoryModal from "../../../components/category/AddCategoryModal";
@@ -7,6 +6,7 @@ import moment from "moment/moment";
 import { Space, Table, Tag } from "antd";
 import { message, Popconfirm } from "antd";
 import { categoryServiceUrl } from "../../../config/config";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function ProductCategories() {
   const [form] = Form.useForm();
@@ -16,6 +16,7 @@ export default function ProductCategories() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const formButton = useRef(null);
+  const axios = useAxiosPrivate();
 
   const handleOk = () => {
     formButton.current.click();

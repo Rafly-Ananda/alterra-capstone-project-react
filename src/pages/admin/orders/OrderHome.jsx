@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Space, Table } from "antd";
 import { Button, Form } from "antd";
 import moment from "moment/moment";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import axios from "axios";
 import { message, Popconfirm } from "antd";
 import DetailModal from "../../../components/order/DetailModal";
@@ -14,6 +15,7 @@ export default function OrderHome() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState();
   const formButton = useRef(null);
+  const axios = useAxiosPrivate();
 
   const handleOk = () => {
     formButton.current.click();
