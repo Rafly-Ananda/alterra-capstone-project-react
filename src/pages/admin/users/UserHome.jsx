@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { Button, Form } from "antd";
 import moment from "moment/moment";
@@ -6,6 +5,7 @@ import { Space, Table } from "antd";
 import { message, Popconfirm } from "antd";
 import EditUserModal from "../../../components/user/EditUserModal";
 import { userServiceUrl } from "../../../config/config";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export default function UserHome() {
   const [form] = Form.useForm();
@@ -14,6 +14,7 @@ export default function UserHome() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formButton = useRef(null);
+  const axios = useAxiosPrivate();
 
   const handleOk = () => {
     formButton.current.click();

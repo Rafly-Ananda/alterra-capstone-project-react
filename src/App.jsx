@@ -18,8 +18,6 @@ import UserHome from "./pages/admin/users/UserHome";
 import OrderHome from "./pages/admin/orders/OrderHome";
 
 // No Domain
-import Home from "./pages/admin/Home";
-import Payments from "./pages/admin/Payments";
 import NotFound from "./pages/admin/NotFound";
 import LoginForm from "./components/global/LoginForm";
 
@@ -27,18 +25,21 @@ export default function App() {
   return (
     <Routes>
       <Route path="/admin" element={<AdminLayout />}>
-        <Route path="" element={<Home />} />
+        <Route
+          path=""
+          element={<Navigate to="/admin/items/products" replace />}
+        />
         <Route path="items" element={<ProductOutlet />}>
           <Route path="products" element={<ProductHome />} />
           <Route path="categories" element={<ProductCategories />} />
         </Route>
         <Route path="users" element={<UserHome />} />
         <Route path="orders" element={<OrderHome />} />
-        {/* <Route path="logout" element={<Product />} /> */}
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>
       <Route path="/" element={<>Base Home For client routes</>}></Route>
       <Route path="/login" element={<LoginForm />}></Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

@@ -1,7 +1,7 @@
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, DatePicker, Select } from "antd";
 import { Space, Table, Tag } from "antd";
-import axios from "axios";
 import { orderServiceUrl, productServiceUrl } from "../../config/config";
 
 export default function DetailOrderForm({
@@ -12,6 +12,7 @@ export default function DetailOrderForm({
 }) {
   const [orderState, setOrderState] = useState();
   const [products, setProducts] = useState([]);
+  const axios = useAxiosPrivate();
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
