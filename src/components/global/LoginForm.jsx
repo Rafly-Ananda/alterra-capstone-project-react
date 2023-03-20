@@ -4,7 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authServiceUrl } from "../../config/config";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
+import { message,Typography } from "antd";
 import { useSelector } from "react-redux";
 
 import {
@@ -14,6 +14,8 @@ import {
 } from "../../redux/slice/usersSlice";
 
 export default function LoginForm() {
+  const { Title } = Typography;
+  const { Text, Link } = Typography;
   const { user } = useSelector((state) => state);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -39,7 +41,8 @@ export default function LoginForm() {
   }, [user]);
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
+    <div className="w-full h-screen flex flex-col items-center justify-center">
+      <Title level={4}>Login</Title>
       <Form
         name="basic"
         labelCol={{
@@ -97,6 +100,9 @@ export default function LoginForm() {
           </Button>
         </Form.Item>
       </Form>
+      <Link href="/register">
+          Didn't have an account ? Register
+      </Link>
     </div>
   );
 }
