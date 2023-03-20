@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu,Button,Badge,Avatar } from "antd";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { UserOutlined, ShoppingCartOutlined,ContainerOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { logoutReducer } from "../../redux/slice/usersSlice";
 import { useDispatch } from "react-redux";
@@ -47,6 +47,11 @@ const NavbarClient = () => {
                     <Menu.Item key="/orders" as={Link} >
                         <NavLink to="/orders">Orders</NavLink>
                     </Menu.Item>
+                    )}
+                    {user?.user.role === "admin" && isLoggedIn && (
+                        <Menu.Item key="/admin" as={Link} >
+                            <NavLink to="/admin"><ContainerOutlined className="mr-2" />Panel Admin</NavLink>
+                        </Menu.Item>
                     )}
                     <Menu.Item key="/cart" style={{ marginLeft: 'auto' }}>
                         <NavLink to="/cart">

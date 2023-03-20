@@ -11,15 +11,25 @@ export default function ClientLayout() {
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-    
+    const { pathname } = useLocation();
+
+
     return (
+        
         <Layout className="layout min-h-screen bg-white">
         <Header className='bg-white drop-shadow-lg'>
             <NavbarClient />
         </Header>
-        <Content className='px-4 md:px-20 xl:px-40 2xl:px-60'>
-            <Outlet />
-        </Content>
+        {pathname === "/" ? (
+            <Content className=''>
+                <Outlet />
+            </Content>
+        ):(
+            <Content className='px-4 md:px-20 xl:px-40 2xl:px-60'>
+                <Outlet />
+            </Content>
+        )}
+        
         </Layout>
     );
 }

@@ -102,7 +102,7 @@ export default function ProductClientDetail() {
                                         {e.product.stock == 0 ? (
                                             <>
                                                 <Button type="submit" size="large" disabled 
-                                                    className="mt-6 flex w-full items-center justify-center rounded-md border bg-gray-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
+                                                    className="mt-6 flex w-full items-center justify-center rounded-md border bg-gray-600 py-3 px-8 font-medium text-white hover:bg-red-700 "
                                                     >
                                                         Sold Out
                                                 </Button>
