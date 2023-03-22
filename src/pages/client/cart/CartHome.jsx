@@ -4,7 +4,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { useState,useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-
+import { NumericFormat } from 'react-number-format';
 import { DeleteOutlined,CloseOutlined } from '@ant-design/icons';
 
 import { addToCart,deleteItemCart,editItemCart,clearCart } from '../../../redux/slice/cartSlice';
@@ -20,8 +20,13 @@ export default function CartHome() {
     const { isLoggedIn } = useSelector((state) => state.user);
 
     const cart = useSelector(state => state.cart);
+    console.log(cart)
+    // let totalQuantityCart = 0;
+    const totalQuantityCart = cart.cart.reduce((total, cart) => total + cart.quantity, 0);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingCheckout, setIsLoadingCheckout] = useState(false);
+
 	const [error, setError] = useState(null);
     const [cartWithProduct, setCartWithProduct] = useState({});
     const [TotalAmout, setTotalAmount] = useState(0);
@@ -96,21 +101,23 @@ export default function CartHome() {
     }
     
     const checkoutOrder = async () => {
+        setIsLoadingCheckout(true)
         if(isLoggedIn){
-            setIsLoading(true);
             try {
                 const response = await axios.post(orderServiceUrl, orderData);
                 console.log(response.data);
                 handleClearCart()
                 sendNotification('success','Success','Checkout successfull, check the order tab to track your order')
+                setIsLoadingCheckout(false)
             } catch (error) {
-                setIsLoading(false);
+                setIsLoadingCheckout(false)
                 console.log(error)
                 sendNotification('error','Success',error.response.data.message)
             } finally {
-                setIsLoading(false);
+                setIsLoadingCheckout(false)
             }
         }else{
+            setIsLoadingCheckout(false)
             message.error("You haven't logged in, you must log in first");
             navigate("/login");
         }
@@ -131,12 +138,11 @@ export default function CartHome() {
                         <h1 className="text-4xl font-semibold py-5">Your Cart</h1>
                     </div>
                 </div>
-                
-                <div className="flex flex-col lg:flex-row h-full m-2">
+                <div class="flex  mb-2 mt-3">
+                    {cartWithProduct.length > 0 ? <Button class="rounded-none align-right my-5" danger onClick={() => handleClearCart()}><CloseOutlined />Clear cart</Button>:""}
+                </div>
+                <div className="flex flex-col lg:flex-row h-full gap-2">
                     <div className="flex-auto bg-white relative rounded-md">
-                    <div class="flex justify-end mb-2">
-                        {cartWithProduct.length > 0 ? <Button class="rounded-none align-right my-5" danger onClick={() => handleClearCart()}><CloseOutlined />Clear cart</Button>:""}
-                    </div>
                     {isLoading ? (
                         <Spin />
                         ) : error ? (
@@ -146,16 +152,21 @@ export default function CartHome() {
                             <div key={cart.product.product_id}>
                                 <Card  className="rounded-md shadow mb-1" >
                                 <div className="flex flex-row flex-wrap">
-                                    <div className="flex-1 bg-white rounded-md p-5">
-                                        <div className="max-h-full flex justify-center items-center h-24 ">
-                                            <img src={cart.imageUrl} alt="product-image" className="h-24 w-24 rounded-md object-cover" style={{ aspectRatio: "1 / 1" }} />
+                                    <div className="flex bg-white rounded-md">
+                                        <div className="max-h-full flex h-40 ">
+                                            <img src={cart.imageUrl} alt="product-image" className="h-40 w-40 rounded-md object-cover" style={{ aspectRatio: "1 / 1" }} />
                                         </div>
                                     </div>
-                                    <div className="flex-auto bg-white p-2 relative rounded-md">
+                                    <div className="flex-auto bg-white p-2 relative rounded-md ml-4">
                                         #{cart.product.product_id}
                                         <h3 className="text-2xl font-semibold mb-2">{cart.product.name}</h3>
-                                        <p className="text-md text-gray-900">Rp{cart.product.price} x {cart.quantityAdded} Items</p>
-                                        <p className="text-md text-gray-900 font-semibold  mb-2">Rp{cart.product.price*cart.quantityAdded}</p>
+                                        <p className="text-md text-gray-900"> 
+                                            <NumericFormat value={cart.product.price} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                                            x {cart.quantityAdded} Item{cart.quantityAdded > 1 && "s"}
+                                            </p>
+                                        <p className="text-md text-gray-900 font-semibold  mb-2">
+                                            <NumericFormat value={cart.product.price*cart.quantityAdded} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                                        </p>
                                         <div className="flex flex-row flex-wrap justify-between">
                                             <div className="flex-1">
                                                 <InputNumber min={1} max={cart.product.stock} defaultValue={cart.quantityAdded} onChange={(value) => handleEditItemCart(cart.product.product_id, value)} />
@@ -176,16 +187,24 @@ export default function CartHome() {
                         <Alert message="Cart is empty" type="warning" />
                     )}
                     </div>
-                    <Card className="flex-1 bg-white rounded-md p-1 m-1 shadow max-h-[250px]">
+                    <Card className="flex-1 bg-white rounded-md p-1 shadow">
                         Total
-                        <p className="text-xl mb-3"> Items</p>
+                        <p className="text-xl mb-3">{totalQuantityCart} Item{totalQuantityCart > 1 && "s"}</p>
                         Total Amount
-                        <p className="text-2xl font-bold mb-3">Rp{TotalAmout}</p>
-                        <Button type="submit" size="large"
-                            className="mt-6 flex w-full items-center justify-center rounded-md border bg-green-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
-                            onClick={()=>checkoutOrder()}>
-                                Checkout
-                        </Button>
+                        <p className="text-2xl font-bold mb-3">
+                            <NumericFormat value={TotalAmout} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                        </p>
+                        {isLoadingCheckout ? (
+                        <Spin />
+                        ) : (
+                            <>
+                            <Button type="submit" size="large"
+                                className="mt-6 flex w-full items-center justify-center rounded-md border bg-green-600 py-3 px-8 font-medium text-white hover:bg-indigo-700 "
+                                onClick={()=>checkoutOrder()}>
+                                    Checkout
+                            </Button>
+                            </>
+                        )}
                     </Card>
                 </div>
             </div>

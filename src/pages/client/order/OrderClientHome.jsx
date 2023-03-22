@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import moment from "moment";
 import { useState,useEffect } from "react";
 import { useSelector } from 'react-redux';
-
+import { NumericFormat } from 'react-number-format';
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 // Components
@@ -160,7 +160,7 @@ return (
 											<span className="absolute inset-0"></span>
 											</a>
 											<p className="mt-1 text-gray-800">Qty : {orderDetail.quantity}</p>
-											<p className="mt-1 text-gray-800">Price : Rp{orderDetail.sale_price}</p>
+											<p className="mt-1 text-gray-800">Price : <NumericFormat value={orderDetail.sale_price} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} /></p>
 											<p>{remainingProducts > 0 && (
 												<span className="text-sky-500">
 												{remainingProducts}+ Products more
@@ -180,7 +180,7 @@ return (
 									Total
 									<span className="absolute inset-0"></span>
 								</h5>
-								<p className="mt-1 text-xl font-semibold">Rp{e.total}</p>
+								<p className="mt-1 text-xl font-semibold"><NumericFormat value={e.total} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} /></p>
 							</div>
 						</div>
 						<div className="my-2">
