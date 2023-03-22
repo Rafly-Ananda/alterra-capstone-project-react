@@ -5,7 +5,7 @@ import { useState,useEffect } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import moment from "moment";
 import StatusBadge from "../../../components/global/StatusBadge";
-
+import { NumericFormat } from 'react-number-format';
 import { LeftOutlined } from '@ant-design/icons';
 import {
     productServiceUrl,
@@ -157,7 +157,9 @@ export default function OrderDetail() {
                                                     <span className="absolute inset-0"></span>
                                                     </div>
                                                     <p className="mt-1 text-gray-800">Qty : {orderDetail.quantity}</p>
-                                                    <p className="mt-1 text-gray-800">Price : Rp{orderDetail.sale_price}</p>
+                                                    <p className="mt-1 text-gray-800">
+                                                        Price : <NumericFormat value={orderDetail.sale_price} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                                                        </p>
                                                 </div>
                                                 : 
                                                 'Product not found'
@@ -171,7 +173,9 @@ export default function OrderDetail() {
                                     <h5 href="#" className="block font-semibold text-gray-900">
                                         Total
                                     </h5>
-                                    <p className="mt-1 text-4xl font-semibold">Rp{e?.total}</p>
+                                    <p className="mt-1 text-4xl font-semibold">
+                                        <NumericFormat value={e?.total} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                                    </p>
                                 </div>
                             </div>
                         ))

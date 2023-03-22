@@ -3,6 +3,7 @@ import { Spin,Alert,Button,InputNumber,notification } from 'antd';
 import { useParams,Link,useLocation } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { LeftOutlined } from '@ant-design/icons';
+import { NumericFormat } from 'react-number-format';
 import axios from "axios";
 import moment from "moment";
 
@@ -84,7 +85,9 @@ export default function ProductClientDetail() {
                             <div className="flex-auto bg-white p-5 lg:px-8 lg:pt-10 lg:pb-10 relative rounded-md">
                             <section aria-labelledby="information-heading" className="mt-2">
                                     <h3 className="text-4xl py-5">{e.product.name}</h3>
-                                    <p className="text-3xl font-semibold text-gray-900">Rp{e.product.price}</p>
+                                    <p className="text-3xl font-semibold text-gray-900">
+                                        <NumericFormat value={e.product.price} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                                    </p>
                                     <div className="mt-6">
                                         <div className="mt-6 flex flex-col">
                                             <p className="text-md mb-2">Description:</p>

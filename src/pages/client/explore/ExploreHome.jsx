@@ -4,6 +4,7 @@ import moment from "moment";
 import { useState,useEffect } from "react";
 import { Card,Button,Spin,Alert,notification } from 'antd';
 import { useParams,Link,useLocation } from "react-router-dom";
+import { NumericFormat } from 'react-number-format';
 import {
     productServiceUrl,
     s3ServiceUrl,
@@ -64,7 +65,9 @@ export default function ExploreHome() {
                             </div>
                             <div className="custom-card p-4">
                             <p className="text-xl text-black mb-2">{product.name}</p>
-                            <p className="text-xl text-black font-semibold">Rp{product.price}</p>
+                            <p className="text-xl text-black font-semibold">
+                                <NumericFormat value={product.price} thousandSeparator="." decimalSeparator="," displayType="text" prefix={'Rp'} />
+                            </p>
                             {product.stock == 0 && (
                                 <div className="mt-2">
                                     <p className="text-red-500 font-semibold">Sold Out</p>
