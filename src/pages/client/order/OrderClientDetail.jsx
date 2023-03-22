@@ -1,5 +1,5 @@
 import React from "react";
-import { Steps,Spin,Alert,Button } from 'antd';
+import { Steps,Spin,Alert,Button,Modal } from 'antd';
 import { useParams,Link } from "react-router-dom";
 import { useState,useEffect } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
@@ -16,7 +16,8 @@ import {
 export default function OrderDetail() {
     const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
-
+    const [ModalPaymentInfoOpen, setModalPaymentInfoOpen] = useState(false);
+    
     const axios = useAxiosPrivate();
 
     const { id } = useParams();
@@ -122,8 +123,9 @@ export default function OrderDetail() {
                                     <>  
                                         <Link to={"/orders/confirm-payment/"+e?.order_id}>
                                             <Alert message="Waiting for payment, please make the payment and confirm your payment" type="warning" />
-                                            <Button type="primary my-1">Confirm Payment</Button>
+                                            <Button type="primary my-1 mx-1">Confirm Payment</Button> 
                                         </Link>
+                                        <Button className="bg-indigo-600" type="primary my-1" onClick={() => setModalPaymentInfoOpen(true)}>Where to pay ?</Button>
                                     </>
                                     )
                                     :
@@ -169,7 +171,7 @@ export default function OrderDetail() {
                                     })}
                                     </div>
                                 </div>
-                                <div>
+                                <div className="p-5">
                                     <h5 href="#" className="block font-semibold text-gray-900">
                                         Total
                                     </h5>
@@ -185,6 +187,18 @@ export default function OrderDetail() {
                     </div>
                 </div>
             </div>
+            <Modal
+                title="Payment Information"
+                centered
+                open={ModalPaymentInfoOpen}
+                onOk={() => setModalPaymentInfoOpen(false)}
+                cancelButtonProps={{ display: "none" }}
+                // onCancel={() => setModal2Open(false)}
+            >
+                <p className="font-xl">Bank of XYZ</p>
+                <h1 className="font-6xl">999.999.999.9999</h1>
+                <p className="font-xl">Jhon Doe</p>
+            </Modal>
         </div>
     </>
   );
