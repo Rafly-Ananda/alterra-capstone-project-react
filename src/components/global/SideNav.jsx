@@ -6,6 +6,7 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
   CreditCardOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Menu, Button } from "antd";
@@ -27,13 +28,14 @@ const items = [
   {
     type: "group",
     children: [
+      getItem("Home", "home", <HomeOutlined />),
       getItem("Items", "items", <DatabaseOutlined />, [
         getItem("Products", "products"),
         getItem("Categories", "categories"),
       ]),
       getItem("Users", "users", <UserOutlined />),
       getItem("Orders", "orders", <ShoppingCartOutlined />),
-      getItem("Settings", "settings", <SettingOutlined />),
+      // getItem("Settings", "settings", <SettingOutlined />),
     ],
   },
 
@@ -56,6 +58,11 @@ export default function SideNav() {
     if (e.key === "logout") {
       dispatch(logoutReducer());
       message.success("You have been logged out");
+      return;
+    }
+
+    if (e.key === "home") {
+      navigate("/");
       return;
     }
 

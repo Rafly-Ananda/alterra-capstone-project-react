@@ -12,6 +12,7 @@ import {
   categoryServiceUrl,
   s3ServiceUrl,
 } from "../../../config/config";
+import { NumericFormat } from "react-number-format";
 
 export default function ProductHome() {
   const [form] = Form.useForm();
@@ -182,7 +183,15 @@ export default function ProductHome() {
     {
       title: "Price",
       dataIndex: "price",
-      key: "price",
+      render: (_, record) => (
+        <NumericFormat
+          value={record.price}
+          thousandSeparator="."
+          decimalSeparator=","
+          displayType="text"
+          prefix={"Rp "}
+        />
+      ),
     },
     {
       title: "Stock",
