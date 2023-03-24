@@ -46,7 +46,7 @@ export default function ExploreHome() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap justify-center gap-2 mb-5">
             {isLoading ? (
                 <Spin />
                 ) : error ? (

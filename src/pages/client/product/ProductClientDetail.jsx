@@ -79,7 +79,7 @@ export default function ProductClientDetail() {
                         <div className="flex flex-col lg:flex-row h-full">
                             <div className="flex-1 bg-white rounded-md p-5">
                                 <div className="h-full flex justify-center items-center">
-                                    <img src={e.imageUrl} alt="product-image" className="h-96 w-full rounded-md object-cover" />
+                                    <img src={e.imageUrl} alt="product-image" className="h-96 rounded-md object-cover" />
                                 </div>
                             </div>
                             <div className="flex-auto bg-white p-5 lg:px-8 lg:pt-10 lg:pb-10 relative rounded-md">
